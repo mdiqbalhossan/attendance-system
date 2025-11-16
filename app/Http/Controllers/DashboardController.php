@@ -56,10 +56,10 @@ class DashboardController extends Controller
             ->pluck('count', 'status')
             ->toArray();
 
-        $present = $attendanceToday['present'] ?? 0;
-        $absent = $attendanceToday['absent'] ?? 0;
-        $late = $attendanceToday['late'] ?? 0;
-        $excused = $attendanceToday['excused'] ?? 0;
+        $present = $attendanceToday['Present'] ?? 0;
+        $absent = $attendanceToday['Absent'] ?? 0;
+        $late = $attendanceToday['Late'] ?? 0;
+        $excused = $attendanceToday['Excused'] ?? 0;
 
         $totalRecorded = $present + $absent + $late + $excused;
         $notRecorded = $totalStudents - $totalRecorded;
@@ -115,10 +115,10 @@ class DashboardController extends Controller
 
             // Initialize counts
             $counts = [
-                'present' => 0,
-                'absent' => 0,
-                'late' => 0,
-                'excused' => 0,
+                'Present' => 0,
+                'Absent' => 0,
+                'Late' => 0,
+                'Excused' => 0,
             ];
 
             // Get counts for this date
@@ -127,10 +127,10 @@ class DashboardController extends Controller
                 $counts[$record->status] = $record->count;
             }
 
-            $presentData[] = $counts['present'];
-            $absentData[] = $counts['absent'];
-            $lateData[] = $counts['late'];
-            $excusedData[] = $counts['excused'];
+            $presentData[] = $counts['Present'];
+            $absentData[] = $counts['Absent'];
+            $lateData[] = $counts['Late'];
+            $excusedData[] = $counts['Excused'];
         }
 
         // Calculate monthly totals
@@ -173,10 +173,10 @@ class DashboardController extends Controller
                 ],
             ],
             'monthlyTotals' => [
-                'present' => $monthlyTotals['present'] ?? 0,
-                'absent' => $monthlyTotals['absent'] ?? 0,
-                'late' => $monthlyTotals['late'] ?? 0,
-                'excused' => $monthlyTotals['excused'] ?? 0,
+                'present' => $monthlyTotals['Present'] ?? 0,
+                'absent' => $monthlyTotals['Absent'] ?? 0,
+                'late' => $monthlyTotals['Late'] ?? 0,
+                'excused' => $monthlyTotals['Excused'] ?? 0,
             ],
         ];
     }
@@ -199,7 +199,7 @@ class DashboardController extends Controller
             ->pluck('count', 'status')
             ->toArray();
 
-        $weeklyPresent = $weeklyAttendance['present'] ?? 0;
+        $weeklyPresent = $weeklyAttendance['Present'] ?? 0;
         $weeklyTotal = array_sum($weeklyAttendance);
         $weeklyAttendanceRate = $weeklyTotal > 0
             ? round(($weeklyPresent / $weeklyTotal) * 100, 1)
@@ -215,7 +215,7 @@ class DashboardController extends Controller
             ->pluck('count', 'status')
             ->toArray();
 
-        $monthlyPresent = $monthlyAttendance['present'] ?? 0;
+        $monthlyPresent = $monthlyAttendance['Present'] ?? 0;
         $monthlyTotal = array_sum($monthlyAttendance);
         $monthlyAttendanceRate = $monthlyTotal > 0
             ? round(($monthlyPresent / $monthlyTotal) * 100, 1)
@@ -228,9 +228,9 @@ class DashboardController extends Controller
             'monthlyAttendanceRate' => $monthlyAttendanceRate,
             'weeklyStats' => [
                 'present' => $weeklyPresent,
-                'absent' => $weeklyAttendance['absent'] ?? 0,
-                'late' => $weeklyAttendance['late'] ?? 0,
-                'excused' => $weeklyAttendance['excused'] ?? 0,
+                'absent' => $weeklyAttendance['Absent'] ?? 0,
+                'late' => $weeklyAttendance['Late'] ?? 0,
+                'excused' => $weeklyAttendance['Excused'] ?? 0,
             ],
         ];
     }

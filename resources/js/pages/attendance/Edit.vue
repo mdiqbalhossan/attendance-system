@@ -32,9 +32,6 @@ interface Props {
 
 const props = defineProps<Props>();
 
-// Debug: Log the attendance data
-console.log('Attendance data:', props.attendance);
-
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Attendance',

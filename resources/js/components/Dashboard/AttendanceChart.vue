@@ -15,7 +15,9 @@ import {
     CategoryScale,
     LinearScale,
     BarElement,
+    BarController,
     LineElement,
+    LineController,
     PointElement,
     Title,
     Tooltip,
@@ -23,12 +25,14 @@ import {
     type ChartConfiguration,
 } from 'chart.js';
 
-// Register Chart.js components
+// Register Chart.js components and controllers
 Chart.register(
     CategoryScale,
     LinearScale,
     BarElement,
+    BarController,
     LineElement,
+    LineController,
     PointElement,
     Title,
     Tooltip,
