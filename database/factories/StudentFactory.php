@@ -29,7 +29,7 @@ class StudentFactory extends Factory
 
         return [
             'name' => $this->faker->name(),
-            'student_id' => 'STU' . $this->faker->unique()->numberBetween(1000, 9999),
+            'student_id' => 'STU'.$this->faker->unique()->numberBetween(1000, 9999),
             'class' => $this->faker->randomElement($classes),
             'section' => $this->faker->randomElement($sections),
             'photo' => null, // We'll handle photo uploads separately

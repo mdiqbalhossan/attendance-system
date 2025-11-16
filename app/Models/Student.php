@@ -44,11 +44,11 @@ class Student extends Model
      */
     public function getPhotoUrlAttribute(): ?string
     {
-        if (!$this->photo) {
+        if (! $this->photo) {
             return null;
         }
 
-        return asset('storage/' . $this->photo);
+        return asset('storage/'.$this->photo);
     }
 
     /**
@@ -58,7 +58,7 @@ class Student extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
-              ->orWhere('student_id', 'like', "%{$search}%");
+                ->orWhere('student_id', 'like', "%{$search}%");
         });
     }
 

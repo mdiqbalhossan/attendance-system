@@ -40,7 +40,7 @@ class NotifyAttendanceRecorded
         // - Send notification to admin dashboard
         // - Send SMS notification
         // - Push notification to mobile app
-        
+
         // Example: Notify if student is absent
         if ($attendance->status === 'Absent') {
             // You can implement email/SMS notification here
@@ -48,7 +48,7 @@ class NotifyAttendanceRecorded
                 'student' => $attendance->student->name,
                 'date' => $attendance->date->format('Y-m-d'),
             ]);
-            
+
             // Example notification implementation:
             // Notification::send($admins, new StudentAbsentNotification($attendance));
         }

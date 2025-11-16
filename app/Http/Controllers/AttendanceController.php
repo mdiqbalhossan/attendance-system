@@ -13,7 +13,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Validation\ValidationException;
 
 class AttendanceController extends Controller
 {
@@ -198,6 +197,7 @@ class AttendanceController extends Controller
         $errorCount = count($results['errors']);
         if ($errorCount > 0) {
             $message = "{$successCount} attendance records saved successfully. {$errorCount} failed.";
+
             return back()->with('warning', $message);
         }
 

@@ -20,13 +20,14 @@ class AttendanceSeeder extends Seeder
 
         if ($students->isEmpty()) {
             $this->command->warn('No students found. Please run StudentSeeder first.');
+
             return;
         }
 
         // Get a user to be the recorder (assuming users exist)
         $recorder = User::first();
 
-        if (!$recorder) {
+        if (! $recorder) {
             $this->command->warn('No users found. Creating a default user.');
             $recorder = User::factory()->create([
                 'name' => 'Admin User',
@@ -44,11 +45,11 @@ class AttendanceSeeder extends Seeder
 
         while ($currentDate <= $endDate) {
             // Skip weekends
-            if (!$currentDate->isWeekend()) {
+            if (! $currentDate->isWeekend()) {
                 foreach ($students as $student) {
                     // 85% chance of being present, 10% absent, 5% late
                     $rand = rand(1, 100);
-                    
+
                     if ($rand <= 85) {
                         $status = 'Present';
                         $note = null;

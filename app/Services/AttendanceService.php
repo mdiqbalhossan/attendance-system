@@ -14,9 +14,8 @@ class AttendanceService
     /**
      * Record bulk attendance for multiple students.
      *
-     * @param array $attendanceData Array of attendance records
-     * @param int $recordedBy User ID who is recording
-     * @return array
+     * @param  array  $attendanceData  Array of attendance records
+     * @param  int  $recordedBy  User ID who is recording
      */
     public function recordBulkAttendance(array $attendanceData, int $recordedBy, string $date): array
     {
@@ -68,12 +67,6 @@ class AttendanceService
 
     /**
      * Get monthly attendance report for a class.
-     *
-     * @param int $month
-     * @param int $year
-     * @param string|null $class
-     * @param string|null $section
-     * @return array
      */
     public function getMonthlyReport(
         int $month,
@@ -82,11 +75,11 @@ class AttendanceService
         ?string $section = null
     ): array {
         $cacheKey = "attendance:monthly:{$year}:{$month}";
-        
+
         if ($class) {
             $cacheKey .= ":{$class}";
         }
-        
+
         if ($section) {
             $cacheKey .= ":{$section}";
         }
@@ -123,12 +116,7 @@ class AttendanceService
     /**
      * Calculate monthly attendance statistics.
      *
-     * @param \Illuminate\Support\Collection $attendances
-     * @param int $month
-     * @param int $year
-     * @param string|null $class
-     * @param string|null $section
-     * @return array
+     * @param  \Illuminate\Support\Collection  $attendances
      */
     private function calculateMonthlyStats(
         $attendances,
@@ -149,13 +137,13 @@ class AttendanceService
         $workingDays = $this->getWorkingDaysInMonth($month, $year);
 
         // Calculate attendance rate
-        $attendanceRate = $totalRecords > 0 
-            ? round(($presentCount + $lateCount) / $totalRecords * 100, 2) 
+        $attendanceRate = $totalRecords > 0
+            ? round(($presentCount + $lateCount) / $totalRecords * 100, 2)
             : 0;
 
         // Per student statistics
         $studentStats = [];
-        
+
         foreach ($attendances->groupBy('student_id') as $studentId => $studentAttendances) {
             $student = $studentAttendances->first()->student;
             $studentStats[] = [
@@ -166,8 +154,8 @@ class AttendanceService
                 'late' => $studentAttendances->where('status', 'Late')->count(),
                 'attendance_rate' => $studentAttendances->count() > 0
                     ? round(
-                        ($studentAttendances->where('status', 'Present')->count() + 
-                         $studentAttendances->where('status', 'Late')->count()) / 
+                        ($studentAttendances->where('status', 'Present')->count() +
+                         $studentAttendances->where('status', 'Late')->count()) /
                         $studentAttendances->count() * 100,
                         2
                     )
@@ -189,10 +177,6 @@ class AttendanceService
 
     /**
      * Get working days in a month (excluding weekends).
-     *
-     * @param int $month
-     * @param int $year
-     * @return int
      */
     private function getWorkingDaysInMonth(int $month, int $year): int
     {
@@ -201,7 +185,7 @@ class AttendanceService
         $workingDays = 0;
 
         while ($startDate->lte($endDate)) {
-            if (!$startDate->isWeekend()) {
+            if (! $startDate->isWeekend()) {
                 $workingDays++;
             }
             $startDate->addDay();
@@ -212,20 +196,15 @@ class AttendanceService
 
     /**
      * Get attendance statistics for a specific date.
-     *
-     * @param string $date
-     * @param string|null $class
-     * @param string|null $section
-     * @return array
      */
     public function getDailyStats(string $date, ?string $class = null, ?string $section = null): array
     {
         $cacheKey = "attendance:daily:{$date}";
-        
+
         if ($class) {
             $cacheKey .= ":{$class}";
         }
-        
+
         if ($section) {
             $cacheKey .= ":{$section}";
         }
@@ -253,8 +232,8 @@ class AttendanceService
                 'late' => $attendances->where('status', 'Late')->count(),
                 'attendance_rate' => $attendances->count() > 0
                     ? round(
-                        ($attendances->where('status', 'Present')->count() + 
-                         $attendances->where('status', 'Late')->count()) / 
+                        ($attendances->where('status', 'Present')->count() +
+                         $attendances->where('status', 'Late')->count()) /
                         $attendances->count() * 100,
                         2
                     )
@@ -265,21 +244,17 @@ class AttendanceService
 
     /**
      * Clear attendance cache for a student and date.
-     *
-     * @param int $studentId
-     * @param string $date
-     * @return void
      */
     private function clearAttendanceCache(int $studentId, string $date): void
     {
         $carbonDate = Carbon::parse($date);
-        
+
         // Clear daily cache
         Cache::forget("attendance:daily:{$date}");
-        
+
         // Clear monthly cache
         Cache::forget("attendance:monthly:{$carbonDate->year}:{$carbonDate->month}");
-        
+
         // Clear with class/section variations (simplified - in production, you might want more specific clearing)
         $student = Student::find($studentId);
         if ($student) {
@@ -293,9 +268,6 @@ class AttendanceService
     /**
      * Get student attendance history.
      *
-     * @param int $studentId
-     * @param string|null $startDate
-     * @param string|null $endDate
      * @return \Illuminate\Support\Collection
      */
     public function getStudentAttendanceHistory(
@@ -315,4 +287,3 @@ class AttendanceService
         return $query->get();
     }
 }
-

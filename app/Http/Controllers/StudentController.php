@@ -46,7 +46,7 @@ class StudentController extends Controller
             ->pluck('class')
             ->sort()
             ->values();
-        
+
         $sections = Student::distinct()
             ->whereNotNull('section')
             ->pluck('section')

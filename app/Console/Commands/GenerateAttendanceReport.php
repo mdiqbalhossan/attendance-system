@@ -55,21 +55,23 @@ class GenerateAttendanceReport extends Command
         // Validate month and year
         if ($month < 1 || $month > 12) {
             $this->error('Invalid month. Please provide a month between 1 and 12.');
+
             return Command::FAILURE;
         }
 
         if ($year < 2020 || $year > 2100) {
             $this->error('Invalid year. Please provide a year between 2020 and 2100.');
+
             return Command::FAILURE;
         }
 
-        $this->info("Generating attendance report...");
-        $this->info("Month: " . Carbon::create($year, $month, 1)->format('F Y'));
-        
+        $this->info('Generating attendance report...');
+        $this->info('Month: '.Carbon::create($year, $month, 1)->format('F Y'));
+
         if ($class) {
             $this->info("Class: {$class}");
         }
-        
+
         if ($section) {
             $this->info("Section: {$section}");
         }
@@ -102,16 +104,14 @@ class GenerateAttendanceReport extends Command
 
             return Command::SUCCESS;
         } catch (\Exception $e) {
-            $this->error('Failed to generate report: ' . $e->getMessage());
+            $this->error('Failed to generate report: '.$e->getMessage());
+
             return Command::FAILURE;
         }
     }
 
     /**
      * Display overall statistics.
-     *
-     * @param array $stats
-     * @return void
      */
     protected function displayOverallStats(array $stats): void
     {
@@ -124,21 +124,19 @@ class GenerateAttendanceReport extends Command
                 ['Present Count', $stats['present_count']],
                 ['Absent Count', $stats['absent_count']],
                 ['Late Count', $stats['late_count']],
-                ['Attendance Rate', $stats['attendance_rate'] . '%'],
+                ['Attendance Rate', $stats['attendance_rate'].'%'],
             ]
         );
     }
 
     /**
      * Display student statistics in table format.
-     *
-     * @param array $studentStats
-     * @return void
      */
     protected function displayTableReport(array $studentStats): void
     {
         if (empty($studentStats)) {
             $this->warn('No attendance records found for the specified criteria.');
+
             return;
         }
 
@@ -166,7 +164,7 @@ class GenerateAttendanceReport extends Command
                 $stat['present'],
                 $stat['absent'],
                 $stat['late'],
-                $stat['attendance_rate'] . '%',
+                $stat['attendance_rate'].'%',
             ];
         }
 
@@ -175,9 +173,6 @@ class GenerateAttendanceReport extends Command
 
     /**
      * Display report in JSON format.
-     *
-     * @param array $report
-     * @return void
      */
     protected function displayJsonReport(array $report): void
     {

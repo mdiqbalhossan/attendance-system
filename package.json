@@ -30,8 +30,10 @@
         "vue-tsc": "^2.2.4"
     },
     "dependencies": {
+        "@iconify/vue": "^5.0.0",
         "@inertiajs/vue3": "^2.1.0",
         "@vueuse/core": "^12.8.2",
+        "chart.js": "^4.5.1",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "laravel-vite-plugin": "^2.0.0",
