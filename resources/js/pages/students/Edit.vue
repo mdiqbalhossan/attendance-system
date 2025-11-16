@@ -47,6 +47,7 @@ const form = useForm({
     class: props.student?.class || '',
     section: props.student?.section || '',
     photo: null as File | null,
+    _method: 'PUT', // Laravel method spoofing for file uploads
 });
 
 const photoPreview = ref<string | null>(props.student?.photo_url || null);
@@ -86,8 +87,10 @@ const submit = () => {
         return;
     }
     
+    // Use POST with _method field for file uploads (Laravel method spoofing)
     form.post(`/students/${props.student.id}`, {
-        method: 'put',
+        preserveScroll: true,
+        forceFormData: true,
         onSuccess: () => {
             // Redirect will be handled by the controller
         },

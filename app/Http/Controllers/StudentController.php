@@ -97,7 +97,7 @@ class StudentController extends Controller
     public function show(Student $student): Response
     {
         return Inertia::render('students/Show', [
-            'student' => new StudentResource($student),
+            'student' => (new StudentResource($student))->resolve(),
         ]);
     }
 
@@ -107,7 +107,7 @@ class StudentController extends Controller
     public function edit(Student $student): Response
     {
         return Inertia::render('students/Edit', [
-            'student' => new StudentResource($student),
+            'student' => (new StudentResource($student))->resolve(),
         ]);
     }
 

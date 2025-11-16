@@ -274,7 +274,20 @@ class AttendanceController extends Controller
         $attendance->load('student');
 
         return Inertia::render('attendance/Edit', [
-            'attendance' => new AttendanceResource($attendance),
+            'attendance' => [
+                'id' => $attendance->id,
+                'student_id' => $attendance->student_id,
+                'student' => $attendance->student ? [
+                    'id' => $attendance->student->id,
+                    'name' => $attendance->student->name,
+                    'student_id' => $attendance->student->student_id,
+                    'class' => $attendance->student->class,
+                    'section' => $attendance->student->section,
+                ] : null,
+                'date' => $attendance->date->format('Y-m-d'),
+                'status' => $attendance->status,
+                'note' => $attendance->note,
+            ],
         ]);
     }
 
