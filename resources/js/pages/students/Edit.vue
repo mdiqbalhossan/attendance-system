@@ -32,24 +32,24 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/students',
     },
     {
-        title: props.student.name,
-        href: `/students/${props.student.id}`,
+        title: props.student?.name || 'Student',
+        href: `/students/${props.student?.id || ''}`,
     },
     {
         title: 'Edit',
-        href: `/students/${props.student.id}/edit`,
+        href: `/students/${props.student?.id || ''}/edit`,
     },
 ];
 
 const form = useForm({
-    name: props.student.name,
-    student_id: props.student.student_id,
-    class: props.student.class,
-    section: props.student.section,
+    name: props.student?.name || '',
+    student_id: props.student?.student_id || '',
+    class: props.student?.class || '',
+    section: props.student?.section || '',
     photo: null as File | null,
 });
 
-const photoPreview = ref<string | null>(props.student.photo_url);
+const photoPreview = ref<string | null>(props.student?.photo_url || null);
 
 const handlePhotoChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
@@ -66,7 +66,7 @@ const handlePhotoChange = (event: Event) => {
         reader.readAsDataURL(file);
     } else {
         form.photo = null;
-        photoPreview.value = props.student.photo_url;
+        photoPreview.value = props.student?.photo_url || null;
     }
 };
 
@@ -81,6 +81,11 @@ const removePhoto = () => {
 };
 
 const submit = () => {
+    if (!props.student?.id) {
+        console.error('Student ID is missing');
+        return;
+    }
+    
     form.post(`/students/${props.student.id}`, {
         method: 'put',
         onSuccess: () => {
@@ -91,7 +96,7 @@ const submit = () => {
 </script>
 
 <template>
-    <Head :title="`Edit ${student.name}`" />
+    <Head :title="`Edit ${student?.name || 'Student'}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-6">
@@ -100,11 +105,11 @@ const submit = () => {
                 <div>
                     <h1 class="text-2xl font-semibold text-foreground">Edit Student</h1>
                     <p class="text-sm text-muted-foreground">
-                        Update {{ student.name }}'s information
+                        Update {{ student?.name || 'student' }}'s information
                     </p>
                 </div>
                 <div class="flex gap-2">
-                    <Link :href="`/students/${student.id}`">
+                    <Link :href="`/students/${student?.id || ''}`">
                         <Button variant="outline">View Student</Button>
                     </Link>
                     <Link href="/students">
@@ -218,7 +223,7 @@ const submit = () => {
                             <span v-if="form.processing">Updating...</span>
                             <span v-else>Update Student</span>
                         </Button>
-                        <Link :href="`/students/${student.id}`">
+                        <Link :href="`/students/${student?.id || ''}`">
                             <Button type="button" variant="outline">
                                 Cancel
                             </Button>

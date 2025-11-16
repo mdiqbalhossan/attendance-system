@@ -40,16 +40,25 @@ class StudentController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        // Get unique classes and sections for filters
-        $classes = Student::distinct()->pluck('class')->sort()->values();
-        $sections = Student::distinct()->pluck('section')->sort()->values();
+        // Get unique classes and sections for filters (only non-null values)
+        $classes = Student::distinct()
+            ->whereNotNull('class')
+            ->pluck('class')
+            ->sort()
+            ->values();
+        
+        $sections = Student::distinct()
+            ->whereNotNull('section')
+            ->pluck('section')
+            ->sort()
+            ->values();
 
         return Inertia::render('students/Index', [
             'students' => StudentResource::collection($students),
             'filters' => [
-                'search' => $request->search,
-                'class' => $request->class,
-                'section' => $request->section,
+                'search' => $request->search ?? '',
+                'class' => $request->class ?? '',
+                'section' => $request->section ?? '',
             ],
             'classes' => $classes,
             'sections' => $sections,
