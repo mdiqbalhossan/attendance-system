@@ -23,16 +23,13 @@ export function useAttendance() {
         error.value = null;
 
         try {
-            // Add date to each attendance record
-            const attendancesWithDate = attendances.map(attendance => ({
-                ...attendance,
-                date,
-            }));
-
+            // Send both date and attendances array
+            // Backend's prepareForValidation() will merge date into each record
             router.post(
                 '/attendance/bulk',
                 {
-                    attendances: attendancesWithDate,
+                    date: date,
+                    attendances: attendances,
                 },
                 {
                     preserveScroll: true,

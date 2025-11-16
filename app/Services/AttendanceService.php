@@ -18,7 +18,7 @@ class AttendanceService
      * @param int $recordedBy User ID who is recording
      * @return array
      */
-    public function recordBulkAttendance(array $attendanceData, int $recordedBy): array
+    public function recordBulkAttendance(array $attendanceData, int $recordedBy, string $date): array
     {
         $results = [
             'success' => [],
@@ -33,7 +33,7 @@ class AttendanceService
                     $attendance = Attendance::updateOrCreate(
                         [
                             'student_id' => $data['student_id'],
-                            'date' => $data['date'],
+                            'date' => $date,
                         ],
                         [
                             'status' => $data['status'],
@@ -48,7 +48,7 @@ class AttendanceService
                     event(new AttendanceRecorded($attendance));
 
                     // Clear cache for this student and date
-                    $this->clearAttendanceCache($data['student_id'], $data['date']);
+                    $this->clearAttendanceCache($data['student_id'], $date);
                 } catch (\Exception $e) {
                     $results['errors'][] = [
                         'student_id' => $data['student_id'] ?? null,

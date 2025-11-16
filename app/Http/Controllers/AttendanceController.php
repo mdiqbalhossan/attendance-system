@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Validation\ValidationException;
 
 class AttendanceController extends Controller
 {
@@ -188,21 +189,19 @@ class AttendanceController extends Controller
     public function bulkStore(BulkAttendanceRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-
         $results = $this->attendanceService->recordBulkAttendance(
             $validated['attendances'],
-            auth()->id()
+            auth()->id(),
+            $validated['date']
         );
-
         $successCount = count($results['success']);
         $errorCount = count($results['errors']);
-
         if ($errorCount > 0) {
             $message = "{$successCount} attendance records saved successfully. {$errorCount} failed.";
             return back()->with('warning', $message);
         }
 
-        return back()->with('success', "Attendance recorded successfully for {$successCount} students.");
+        return redirect()->route('attendance.index')->with('success', "Attendance recorded successfully for {$successCount} students.");
     }
 
     /**

@@ -7,6 +7,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import { Toaster } from '@/components/ui/toast';
 import { home } from '@/routes';
 import { Link } from '@inertiajs/vue3';
 
@@ -46,5 +47,6 @@ defineProps<{
                 </Card>
             </div>
         </div>
+        <Toaster />
     </div>
 </template>

@@ -108,11 +108,20 @@ watch(() => page.props.flash, (flash: any) => {
 
 const attendanceSummary = computed(() => {
     const records = Object.values(attendanceRecords.value);
+    const total = records.length;
+    const present = records.filter(r => r.status === 'Present').length;
+    const absent = records.filter(r => r.status === 'Absent').length;
+    const late = records.filter(r => r.status === 'Late').length;
+    
     return {
-        total: records.length,
-        present: records.filter(r => r.status === 'Present').length,
-        absent: records.filter(r => r.status === 'Absent').length,
-        late: records.filter(r => r.status === 'Late').length,
+        total,
+        present,
+        absent,
+        late,
+        presentPercentage: total > 0 ? ((present / total) * 100).toFixed(1) : '0.0',
+        absentPercentage: total > 0 ? ((absent / total) * 100).toFixed(1) : '0.0',
+        latePercentage: total > 0 ? ((late / total) * 100).toFixed(1) : '0.0',
+        attendanceRate: total > 0 ? (((present + late) / total) * 100).toFixed(1) : '0.0',
     };
 });
 
@@ -213,22 +222,60 @@ const submitAttendance = async () => {
             <!-- Summary Card -->
             <Card class="bg-gradient-to-br from-primary/10 to-primary/5">
                 <CardContent class="pt-6">
+                    <!-- Overall Attendance Rate -->
+                    <div class="mb-6 text-center">
+                        <div class="text-4xl font-bold text-primary mb-2">
+                            {{ attendanceSummary.attendanceRate }}%
+                        </div>
+                        <div class="text-sm font-medium text-muted-foreground mb-3">
+                            Overall Attendance Rate
+                        </div>
+                        <div class="w-full bg-muted rounded-full h-3 overflow-hidden">
+                            <div 
+                                class="h-full bg-gradient-to-r from-green-500 to-primary transition-all duration-300 ease-in-out"
+                                :style="{ width: `${attendanceSummary.attendanceRate}%` }"
+                            ></div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Statistics -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="text-center">
+                        <div class="text-center p-3 rounded-lg bg-background/50 border-2 border-primary/20">
                             <div class="text-2xl font-bold text-primary">{{ attendanceSummary.total }}</div>
                             <div class="text-xs text-muted-foreground">Total Students</div>
                         </div>
-                        <div class="text-center">
+                        <div class="text-center p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
                             <div class="text-2xl font-bold text-green-600">{{ attendanceSummary.present }}</div>
-                            <div class="text-xs text-muted-foreground">Present</div>
+                            <div class="text-xs text-muted-foreground mb-2">Present</div>
+                            <div class="w-full bg-green-200 dark:bg-green-900/50 rounded-full h-1.5 mb-1">
+                                <div 
+                                    class="h-full bg-green-600 rounded-full transition-all duration-300"
+                                    :style="{ width: `${attendanceSummary.presentPercentage}%` }"
+                                ></div>
+                            </div>
+                            <div class="text-xs font-semibold text-green-600">{{ attendanceSummary.presentPercentage }}%</div>
                         </div>
-                        <div class="text-center">
+                        <div class="text-center p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
                             <div class="text-2xl font-bold text-red-600">{{ attendanceSummary.absent }}</div>
-                            <div class="text-xs text-muted-foreground">Absent</div>
+                            <div class="text-xs text-muted-foreground mb-2">Absent</div>
+                            <div class="w-full bg-red-200 dark:bg-red-900/50 rounded-full h-1.5 mb-1">
+                                <div 
+                                    class="h-full bg-red-600 rounded-full transition-all duration-300"
+                                    :style="{ width: `${attendanceSummary.absentPercentage}%` }"
+                                ></div>
+                            </div>
+                            <div class="text-xs font-semibold text-red-600">{{ attendanceSummary.absentPercentage }}%</div>
                         </div>
-                        <div class="text-center">
+                        <div class="text-center p-3 rounded-lg bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800">
                             <div class="text-2xl font-bold text-yellow-600">{{ attendanceSummary.late }}</div>
-                            <div class="text-xs text-muted-foreground">Late</div>
+                            <div class="text-xs text-muted-foreground mb-2">Late</div>
+                            <div class="w-full bg-yellow-200 dark:bg-yellow-900/50 rounded-full h-1.5 mb-1">
+                                <div 
+                                    class="h-full bg-yellow-600 rounded-full transition-all duration-300"
+                                    :style="{ width: `${attendanceSummary.latePercentage}%` }"
+                                ></div>
+                            </div>
+                            <div class="text-xs font-semibold text-yellow-600">{{ attendanceSummary.latePercentage }}%</div>
                         </div>
                     </div>
                 </CardContent>

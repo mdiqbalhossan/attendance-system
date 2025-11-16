@@ -273,13 +273,13 @@ const { getStatusColor, deleteAttendance } = useAttendance();
                                     {{ attendance.date_formatted }}
                                 </td>
                                 <td class="px-4 py-3 font-medium">
-                                    {{ attendance.student.name }}
+                                    {{ attendance.student?.name || 'N/A' }}
                                 </td>
                                 <td class="px-4 py-3 text-sm text-muted-foreground">
-                                    {{ attendance.student.student_id }}
+                                    {{ attendance.student?.student_id || 'N/A' }}
                                 </td>
                                 <td class="px-4 py-3 text-sm">
-                                    Class {{ attendance.student.class }} - Section {{ attendance.student.section }}
+                                    Class {{ attendance.student?.class || 'N/A' }} - Section {{ attendance.student?.section || 'N/A' }}
                                 </td>
                                 <td class="px-4 py-3">
                                     <Badge :class="getStatusColor(attendance.status)">

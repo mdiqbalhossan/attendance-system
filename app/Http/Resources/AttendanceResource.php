@@ -17,17 +17,21 @@ class AttendanceResource extends JsonResource
         return [
             'id' => $this->id,
             'student_id' => $this->student_id,
-            'student' => new StudentResource($this->whenLoaded('student')),
+            'student' => $this->when($this->relationLoaded('student'), function () {
+                return new StudentResource($this->student);
+            }),
             'date' => $this->date->format('Y-m-d'),
             'date_formatted' => $this->date->format('F d, Y'),
             'status' => $this->status,
             'note' => $this->note,
             'recorded_by' => $this->recorded_by,
-            'recorder' => [
-                'id' => $this->whenLoaded('recordedBy', fn() => $this->recordedBy->id),
-                'name' => $this->whenLoaded('recordedBy', fn() => $this->recordedBy->name),
-                'email' => $this->whenLoaded('recordedBy', fn() => $this->recordedBy->email),
-            ],
+            'recorder' => $this->when($this->relationLoaded('recordedBy'), function () {
+                return [
+                    'id' => $this->recordedBy->id,
+                    'name' => $this->recordedBy->name,
+                    'email' => $this->recordedBy->email,
+                ];
+            }),
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
         ];
