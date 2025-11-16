@@ -1,0 +1,67 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: attendance_app
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - mysql
+    environment:
+      - APP_ENV=local
+    networks:
+      - attendance_network
+
+  nginx:
+    image: nginx:latest
+    container_name: attendance_nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - attendance_network
+
+  node:
+    build:
+      context: .
+      dockerfile: docker/node/Dockerfile
+    container_name: attendance_node
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - /var/www/html/node_modules  # Use anonymous volume to prevent host override
+    ports:
+      - "5173:5173"  # Vite dev server port
+    command: ["npm", "run", "dev"]
+    depends_on:
+      - app  # Ensure Laravel app is ready
+    networks:
+      - attendance_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: attendance_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: attendance_system
+      MYSQL_USER: iqbal
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - attendance_network
+
+networks:
+  attendance_network:
+    driver: bridge
+
+volumes:
+  mysql_data:

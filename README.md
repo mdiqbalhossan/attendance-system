@@ -88,6 +88,157 @@ DB_USERNAME=root
 DB_PASSWORD=your_password
 ```
 
+## 🐳 Running with Docker
+
+### Prerequisites
+
+- **Docker** >= 20.10
+- **Docker Compose** >= 2.0
+
+### Docker Setup
+
+#### 1. Build and Start Containers
+
+```bash
+# Build and start all containers in detached mode
+docker-compose up -d --build
+
+# Or use the shorthand
+docker compose up -d --build
+```
+
+This will start:
+- 🐘 **PHP-FPM Container** - Laravel application
+- 🗄️ **MySQL Container** - Database server
+- 🌐 **Nginx Container** - Web server
+- ⚡ **Node Container** - Vite dev server (development only)
+
+#### 2. Install Dependencies Inside Container
+
+```bash
+# Install PHP dependencies
+docker-compose exec app composer install
+
+# Install JavaScript dependencies
+docker-compose exec app npm install
+
+# Generate application key
+docker-compose exec app php artisan key:generate
+```
+
+#### 3. Run Migrations and Seeders
+
+```bash
+# Run migrations
+docker-compose exec app php artisan migrate
+
+# Run migrations with seeding
+docker-compose exec app php artisan migrate:fresh --seed
+```
+
+#### 4. Access the Application
+
+Once containers are running, access the application at:
+- 🌐 **Application:** `http://localhost:8000`
+- 🗄️ **MySQL:** `localhost:3306` (from host machine)
+
+### Common Docker Commands
+
+```bash
+# View running containers
+docker-compose ps
+
+# View logs
+docker-compose logs -f
+
+# View specific service logs
+docker-compose logs -f app
+docker-compose logs -f nginx
+
+# Stop containers
+docker-compose down
+
+# Stop and remove volumes (WARNING: Deletes database data)
+docker-compose down -v
+
+# Restart containers
+docker-compose restart
+
+# Execute commands in app container
+docker-compose exec app php artisan optimize:clear
+docker-compose exec app php artisan route:list
+
+# Access container shell
+docker-compose exec app bash
+docker-compose exec mysql bash
+```
+
+### Docker Development Workflow
+
+```bash
+# Start development environment
+docker-compose up -d
+
+# Watch frontend assets with hot reload
+docker-compose exec app npm run dev
+
+# Run tests inside container
+docker-compose exec app ./vendor/bin/pest
+
+# Format code
+docker-compose exec app ./vendor/bin/pint
+docker-compose exec app npm run format
+
+# Stop everything when done
+docker-compose down
+```
+
+### Docker Production Build
+
+```bash
+# Build production image
+docker build -t attendance-system:latest .
+
+# Run production container
+docker run -d -p 8000:80 \
+  --env-file .env.production \
+  --name attendance-system \
+  attendance-system:latest
+```
+
+### Docker Troubleshooting
+
+#### Issue: Port already in use
+
+```bash
+# Change port in docker-compose.yml or use different port
+docker-compose up -d --force-recreate
+
+# Or find and stop conflicting service
+docker ps
+docker stop <container-id>
+```
+
+#### Issue: Permission errors
+
+```bash
+# Fix storage and cache permissions
+docker-compose exec app chmod -R 777 storage bootstrap/cache
+```
+
+#### Issue: Database connection refused
+
+```bash
+# Ensure MySQL container is running
+docker-compose ps
+
+# Check MySQL logs
+docker-compose logs mysql
+
+# Restart MySQL container
+docker-compose restart mysql
+```
+
 ## 💾 Database Commands
 
 ### Run Migrations
